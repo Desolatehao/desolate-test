@@ -16,11 +16,11 @@ const route = useRoute()
     </button>
 
     <div mb-0 flex="~ col gap-1 sm:row sm:gap-3 wrap" text-3xl>
-      <RouterLink to="/notes" class="!border-none" :class="route.path === '/notes' ? activeStyle : inactiveStyle">
-        Notes
-      </RouterLink>
       <RouterLink to="/posts" class="!border-none" :class="route.path === '/posts' ? activeStyle : inactiveStyle">
         Blog
+      </RouterLink>
+      <RouterLink to="/notes" class="!border-none" :class="route.path === '/notes' ? activeStyle : inactiveStyle">
+        Notes
       </RouterLink>
 
     </div>
