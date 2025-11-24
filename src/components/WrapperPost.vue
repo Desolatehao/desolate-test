@@ -137,7 +137,8 @@ const ArtComponent = computed(() => {
   >
     <slot />
   </article>
-  <div v-if="route.path !== '/'" class="prose m-auto mt-8 mb-8 slide-enter animate-delay-500 print:hidden">
+  <!-- note界面的底部评论功能先隐藏了 -->
+<!--   <div v-if="route.path !== '/'" class="prose m-auto mt-8 mb-8 slide-enter animate-delay-500 print:hidden">
     <template v-if="frontmatter.duration">
       <span font-mono op50>> </span>
       <span op50>comment on </span>
@@ -154,5 +155,5 @@ const ArtComponent = computed(() => {
       class="font-mono op50 hover:op75"
       v-text="'cd ..'"
     />
-  </div>
+  </div> -->
 </template>
