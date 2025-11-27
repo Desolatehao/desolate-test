@@ -109,6 +109,7 @@ export default defineConfig({
             'java',
             'c',
             'cpp',
+            'php',
           ],
           defaultColor: false,
           cssVariablePrefix: '--s-',
