@@ -118,7 +118,7 @@ f9248aac10f2   3 weeks ago     /bin/sh -c #(nop) CMD ["/bin/bash"]             0
 
 这里再用`Dockerfile`构建一下
 创建Dockerfile文件，写入以下内容
-```Dockerfile
+```dockerfile
 #1. 指定基础镜像
 from ubuntu:latest
 

@@ -35,7 +35,7 @@ Date: 2025-07-22
 
 组合使用：
 假设 Python 应用可以接收一个 `--port` 参数。
-```Dockerfile
+```dockerfile
 FROM python:3.9-slim
 
 WORKDIR /app
