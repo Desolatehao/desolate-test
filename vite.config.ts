@@ -100,7 +100,7 @@ export default defineConfig({
             'json',
             'markdown',
             'python',
-            'Dockerfile',
+            'dockerfile',
             'yaml',
             'sql',
             'go',
