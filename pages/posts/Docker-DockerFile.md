@@ -167,7 +167,7 @@ Hello, Docker!
 WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.conne => => # ction.HTTPSConnection object at 0x72dcbb14baf0>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution')': /simple/flask/
 ```
 	问题原因是因为版本不对，后AI给出答案，已更改为 
-```r
+```ini
 flask
 Werkzeug<3.0
 ```
