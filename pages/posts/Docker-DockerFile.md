@@ -176,7 +176,7 @@ Werkzeug<3.0
 #### 后日记
 ##### 非Root
 Dockerfile中的切换非root用户
-```Dockerfile
+```dockerfile
 3. 遵循安全最佳实践：创建并切换到非 root 用户
 addgroup 创建组，adduser 创建用户并加入组
  -S 表示创建系统用户（无密码，无主目录）
