@@ -94,7 +94,7 @@ RUN apt-get update && \
 #### 测试
 
 在`my-app`文件夹下创建requirements.txt、app.py文件，内容分别如下
-```requirement
+```ini
 flask
 Werkzeug<3.0
 ```

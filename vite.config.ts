@@ -101,6 +101,7 @@ export default defineConfig({
             'markdown',
             'python',
             'dockerfile',
+            'ini',
             'yaml',
             'sql',
             'go',
