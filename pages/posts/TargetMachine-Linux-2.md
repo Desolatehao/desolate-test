@@ -1,5 +1,6 @@
 ---
 title: 知攻善防-Linux应急响应靶机-2
+lang: zh
 Date: 2025-04-02
 ---
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w  

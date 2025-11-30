@@ -1,5 +1,6 @@
 ---
 title: Kali安装drozer并连接至物理机
+lang: zh
 Date: 2025-01-16
 ---
 ## 环境准备：

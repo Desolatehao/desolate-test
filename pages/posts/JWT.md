@@ -1,5 +1,6 @@
 ---
 title: JWT
+lang: zh
 Date: 2025-04-11
 ---
 1. 身份验证：修改某个用户密码，管理员。cookie

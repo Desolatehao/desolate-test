@@ -1,5 +1,6 @@
 ---
 title: Docker-DockerFile
+lang: zh
 Date: 2025-07-22
 ---
 1. 能不能从0或者从其他镜像进行编写配置文件？
