@@ -1,7 +1,7 @@
 ---
 title: 知攻善防-Windows应急响应靶机-Web2
 lang: zh
-Date: 2025-03-28
+date: -03-28
 ---
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w
 
@@ -94,4 +94,4 @@ webshell连接后提权 创建账号hack887$
 7. 攻击者是如何入侵的（选择题）？    
 	FTP爆破成功 然后上传的Webshell
 8. 攻击者的隐藏用户名？  
-	hack887$ 
+	hack887$

@@ -1,6 +1,6 @@
 ---
 title: APP抓包问题总结及常见绕过方法
-Date: 2025-02-20
+date: -02-20
 lang: zh
 ---
 >**免责声明**：由于传播、利用此文所提供的信息而造成的任何直接或间接的后果和损失，均由使用者本人自行承担相关法律风险及责任，文章作者、工具提供者不对使用者的未授权行为和后果负责。在进行相关知识学习，技术操作时请务必遵守《中华人民共和国个人信息保护法》、《中华人民共和国网络安全法》等相关法律法规
@@ -126,4 +126,3 @@ r0capture - https://github.com/r0ysue/r0capture 以下为原项目介绍
 - 通杀协议包括：Http,WebSocket,Ftp,Xmpp,Imap,Smtp,Protobuf等等、以及它们的SSL版本；
 - 通杀所有应用层框架，包括HttpUrlConnection、Okhttp1/3/4、Retrofit/Volley等等；
 - 无视加固，不管是整体壳还是二代壳或VMP，不用考虑加固的事情
-
