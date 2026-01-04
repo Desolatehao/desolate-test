@@ -9,7 +9,8 @@
 ```markdown
 ---
 title: 文章标题
-date: 2025-01-01T00:00:00Z
+lang: zh
+date: -01-01T00:00:00Z
 lang: zh
 duration: 5min
 description: 文章描述（可选）
@@ -230,7 +231,8 @@ $$
 ```markdown
 ---
 title: 我的第一篇博客
-date: 2025-01-01T00:00:00Z
+lang: zh
+date: -01-01T00:00:00Z
 lang: zh
 duration: 5min
 ---

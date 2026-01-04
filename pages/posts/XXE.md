@@ -1,6 +1,7 @@
 ---
 title: XXE
-Date: 2025-04-18
+lang: zh
+date: -04-18
 ---
 ## 概述
 **XXE**（XML External Entity Injection）全称为XML 外部实体注⼊。
