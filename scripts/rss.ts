@@ -6,6 +6,8 @@ import fs from 'fs-extra'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
 
+console.log('RSS SCRIPT RUNNING')
+
 const DOMAIN = 'https://desolatehao.top'
 const AUTHOR = {
   name: 'Desolatehao',
@@ -23,7 +25,8 @@ async function run() {
 }
 
 async function buildBlogRSS() {
-  const files = await fg('src/pages/posts/*.md')
+  const files = await fg('pages/posts/*.md')
+  console.log(`Found ${files.length} posts.`) // 建议添加此行，方便在编译时确认是否读取成功
 
   const options = {
     title: 'Desolatehao',
@@ -58,13 +61,13 @@ async function buildBlogRSS() {
             date: new Date(data.date),
             content: html,
             author: [AUTHOR],
-            link: DOMAIN + i.replace(/^pages(.+)\.md$/, '$1'),
+            link: DOMAIN + i.replace(/^pages/, '').replace(/\.md$/, ''),
           }
         }),
     ))
     .filter(Boolean)
 
-  posts.sort((a, b) => +new Date(b.date) - +new Date(a.date))
+  posts.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0))
 
   await writeFeed('feed', options, posts)
 }

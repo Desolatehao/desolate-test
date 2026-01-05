@@ -72,6 +72,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/posts/1': RouteRecordInfo<
+      '/posts/1',
+      '/posts/1',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/posts/APP-Packet Capture Issues': RouteRecordInfo<
       '/posts/APP-Packet Capture Issues',
       '/posts/APP-Packet Capture Issues',
@@ -257,6 +264,12 @@ declare module 'vue-router/auto-routes' {
     'pages/posts/index.md': {
       routes:
         | '/posts/'
+      views:
+        | never
+    }
+    'pages/posts/1.md': {
+      routes:
+        | '/posts/1'
       views:
         | never
     }
