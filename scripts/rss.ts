@@ -23,7 +23,7 @@ async function run() {
 }
 
 async function buildBlogRSS() {
-  const files = await fg('pages/posts/*.md')
+  const files = await fg('src/pages/posts/*.md')
 
   const options = {
     title: 'Desolatehao',
@@ -44,8 +44,8 @@ async function buildBlogRSS() {
           const raw = await fs.readFile(i, 'utf-8')
           const { data, content } = matter(raw)
 
-          if (data.lang !== 'en')
-            return
+          // if (data.lang !== 'en')
+          //  return
 
           const html = markdown.render(content)
             .replace('src="/', `src="${DOMAIN}/`)
