@@ -10,7 +10,7 @@
 ---
 title: 文章标题
 lang: zh
-date: -01-01T00:00:00Z
+date: 2025-01-01T00:00:00Z
 lang: zh
 duration: 5min
 description: 文章描述（可选）
@@ -232,7 +232,7 @@ $$
 ---
 title: 我的第一篇博客
 lang: zh
-date: -01-01T00:00:00Z
+date: 2025-01-01T00:00:00Z
 lang: zh
 duration: 5min
 ---

@@ -1,7 +1,7 @@
 ---
 title: 知攻善防-Windows应急响应靶机-Web2
 lang: zh
-date: -03-28
+date: 2025-03-28
 ---
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w
 

@@ -1,7 +1,7 @@
 ---
 title: XXE-lab
 lang: zh
-date: -04-18
+date: 2025-04-18
 ---
 靶场地址 https://download.vulnhub.com/xxe/XXE.zip
 
