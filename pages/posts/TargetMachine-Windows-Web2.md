@@ -2,7 +2,9 @@
 title: 知攻善防-Windows应急响应靶机-Web2
 lang: zh
 date: 2025-03-28
+type: note
 ---
+
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w
 
 Windows应急响应靶机 - Web2
@@ -11,33 +13,34 @@ Windows应急响应靶机 - Web2
 
 小李在某单位驻场值守，深夜12点，甲方已经回家了，小李刚偷偷摸鱼后，发现安全设备有告警，于是立刻停掉了机器开始排查。
 
-`Administrator`  `Zgsf@qq.com`
+`Administrator` `Zgsf@qq.com`
 
 这是他的服务器系统，请你找出以下内容，并作为通关条件：
+
 1. 攻击者的IP地址（两个）？
-2. 攻击者的webshell文件名？  
-3. 攻击者的webshell密码？  
+2. 攻击者的webshell文件名？
+3. 攻击者的webshell密码？
 4. 攻击者的伪QQ号？
 5. 攻击者的伪服务器IP地址？
 6. 攻击者的服务器端口？
-7. 攻击者是如何入侵的（选择题）？  
+7. 攻击者是如何入侵的（选择题）？
 8. 攻击者的隐藏用户名？
 
 ## 排查过程
 
 一样的PHP study 找到中间件apache的日志 发现目录扫描
 ![](https://pic.desolatehao.top/df8c2ece1e8d130a60cfa4e2cc00be72.png)
-这里发现攻击IP 192.168.126.135 
+这里发现攻击IP 192.168.126.135
 ![](https://pic.desolatehao.top/899214b484ac50e7bc4ffa25d4a1047a.png)
-发现上传后门 用D盾扫描也是一样的结果 确认为后门文件 system.php 
+发现上传后门 用D盾扫描也是一样的结果 确认为后门文件 system.php
 ![](https://pic.desolatehao.top/a9ae1d6e7d3be572fdd065b92a9d4641.png)
-webshell密码为 hack6618 
+webshell密码为 hack6618
 
 根据原网站目录结构 判断为word press网站
 
 发现影子账号 hack887$
 
-2024-02-29 13:27:11	hack887$	WIN-RRCVI68HLRI	Administrator	WIN-RRCVI68HLRI
+2024-02-29 13:27:11 hack887$ WIN-RRCVI68HLRI Administrator WIN-RRCVI68HLRI
 
 ![](https://pic.desolatehao.top/99b76c9b4a3c542014f709ad09c450c0.png)
 
@@ -48,7 +51,7 @@ webshell密码为 hack6618
 
 ![](https://pic.desolatehao.top/5210f2553b12a8ec4578dd3bc6f47aa5.png)
 
-从时间上来看 这里攻击者已经找到漏洞点 开始攻击 
+从时间上来看 这里攻击者已经找到漏洞点 开始攻击
 
 通过 %UserProfile%\Recent 找到最近修改的文件
 
@@ -73,25 +76,24 @@ FTP日志 发现大量爆破日志
 
 FTP账号密码爆破（成功）
 
-通过ftp上传Webshell 
+通过ftp上传Webshell
 
-webshell连接后提权 创建账号hack887$ 
+webshell连接后提权 创建账号hack887$
 
-
-1. 攻击者的IP地址（两个）？  
-	192.168.126.135 扫描目录
-	192.168.126.129 登陆影子账号
-2. 攻击者的webshell文件名？  
-	system.php 
-3. 攻击者的webshell密码？  
-	 hack6618 
-4. 攻击者的伪QQ号？  
-	777888999321
-5. 攻击者的伪服务器IP地址？  
-	 IP 256.256.66.88 
-6. 攻击者的服务器端口？  
-	Port 65536
-7. 攻击者是如何入侵的（选择题）？    
-	FTP爆破成功 然后上传的Webshell
-8. 攻击者的隐藏用户名？  
-	hack887$
+1. 攻击者的IP地址（两个）？
+   192.168.126.135 扫描目录
+   192.168.126.129 登陆影子账号
+2. 攻击者的webshell文件名？
+   system.php
+3. 攻击者的webshell密码？
+   hack6618
+4. 攻击者的伪QQ号？
+   777888999321
+5. 攻击者的伪服务器IP地址？
+   IP 256.256.66.88
+6. 攻击者的服务器端口？
+   Port 65536
+7. 攻击者是如何入侵的（选择题）？
+   FTP爆破成功 然后上传的Webshell
+8. 攻击者的隐藏用户名？
+   hack887$

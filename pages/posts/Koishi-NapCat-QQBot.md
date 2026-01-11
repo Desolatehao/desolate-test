@@ -2,8 +2,10 @@
 title: 基于Koishi+NapCat的NTQQ机器人搭建
 lang: zh
 date: 2025-02-16
+type: note
 ---
-> 注意本文只做个人记录使用，其中涉及地址链接不保证有效性   
+
+> 注意本文只做个人记录使用，其中涉及地址链接不保证有效性
 > **未经desolatehao'Blog同意,禁止转载,转载时需要标明desolatehao'Blog**
 
 本文主要实现的是原神鸣潮等游戏的自动化插件，当然基于Koishi社区也可以玩其他的插件尽可探索有趣的插件
@@ -17,6 +19,7 @@ date: 2025-02-16
 QQ官方有自身的QQ机器人平台，推荐使用官方机器人，使用第三方QQ平台会面临QQ账号风控的情况，慎用，慎用
 
 本文采用第三方NTQQ+koishi+GsCore实现
+
 ## NapCatQQ
 
 现代化的基于 NTQQ 的 Bot 协议端实现，文档地址 https://www.napcat.wiki/
@@ -32,24 +35,27 @@ QQ官方有自身的QQ机器人平台，推荐使用官方机器人，使用第�
 3.适配快速-采取 Core/Adapter 架构，支持多种 Bot 协议，快速迁移。
 
 ### 安装
+
 ```
 curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script/install.sh && sudo bash napcat.sh --tui
 ```
+
 ![| 500](https://pic.desolatehao.top/8cd3508d3ea0c7367ae5e0b6b47beac3.png)
 选择shell安装，安装cli，我这里已经安装过了所以比较快
 ![](https://pic.desolatehao.top/cce3bbc40190bbe986d6199924bc599d.png)
 ![](https://pic.desolatehao.top/9998ac1d9b9ff2329fc29f047d1e423c.png)
 以下为常用的指令集
+
 ```
-输入 xvfb-run -a qq --no-sandbox 命令启动。 
-保持后台运行 请输入 screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox" 
-后台快速登录 请输入 screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox -q QQ号码" 
-Napcat安装位置 /opt/QQ/resources/app/app_launcher/napcat   
-WEBUI_TOKEN 请自行查看/opt/QQ/resources/app/app_launcher/napcat/config/webui.json文件获取 
+输入 xvfb-run -a qq --no-sandbox 命令启动。
+保持后台运行 请输入 screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox"
+后台快速登录 请输入 screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox -q QQ号码"
+Napcat安装位置 /opt/QQ/resources/app/app_launcher/napcat
+WEBUI_TOKEN 请自行查看/opt/QQ/resources/app/app_launcher/napcat/config/webui.json文件获取
 停止后台运行 请输入 screen -S napcat -X quit
 
-注意, 您可以随时使用 screen -r napcat 来进入后台进程并使用 
-ctrl + a + d 离开(离开不会关闭后台进程)。 
+注意, 您可以随时使用 screen -r napcat 来进入后台进程并使用
+ctrl + a + d 离开(离开不会关闭后台进程)。
 ```
 
 ### 登陆
@@ -58,16 +64,18 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 ![](https://pic.desolatehao.top/ccc8b99b77833bd18bd3a9575c52ecfc.png)
 
 登陆成功后留意命令行中的
+
 ```
-[NapCat] [WebUi] WebUi Local Panel Url: 
+[NapCat] [WebUi] WebUi Local Panel Url:
 http://127.0.0.1:6099/webui?token=？？？
 ```
+
 保存好自己的token，游览器进入http://IP:6099/webui，输入你的token
 
 ![](https://pic.desolatehao.top/e2ea5b70d3c2b450edd6b086ba538985.png)
 ![](https://pic.desolatehao.top/c219ab0536f7d4e16e7a46521d77417f.png)
 
-`太粉了 严重怀疑开发者是一位优雅的小姐姐`   
+`太粉了 严重怀疑开发者是一位优雅的小姐姐`
 点击网络配置 选择新建WS客户端 配置如下
 ![](https://pic.desolatehao.top/8fc81b6b8825378ab9816944f8e202b5.png)
 注意 这里的URL：`ws://127.0.0.1:5140/onebot` 是用于与Koishi平台链接
@@ -75,13 +83,15 @@ http://127.0.0.1:6099/webui?token=？？？
 ### 后台运行
 
 命令行 Ctrl + c 退出
+
 ```
 输入
-screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox" 
+screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox"
 screen -r napcat 进入后台
 扫码登入
 ctrl + a + d 离开(离开不会关闭后台进程)。
 ```
+
 ### 维护
 
 长期运行时可能会出现QQ未反应或者未链接上的情况，恭喜你，风控了😀，手机登陆对应QQ后寻找风控警告，根据官方解封方法解封(很简单一分钟就搞定了)，之后按照以下来进行重新登陆，仅比后台运行多了一步退出screen
@@ -89,7 +99,7 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 ```
 输入
 screen -S napcat -X quit
-screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox" 
+screen -dmS napcat bash -c "xvfb-run -a qq --no-sandbox"
 screen -r napcat 进入后台
 扫码登入
 ctrl + a + d 离开(离开不会关闭后台进程)。
@@ -97,7 +107,7 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 
 ## Koishi
 
-创建跨平台、可扩展、高性能的机器人，官网地址 https://koishi.chat/zh-CN/ 
+创建跨平台、可扩展、高性能的机器人，官网地址 https://koishi.chat/zh-CN/
 
 ### 优点
 
@@ -119,9 +129,11 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 
 商店搜索koishi，点击安装，选择数据库本地，其他设置都是默认的，注意端口是否是5140
 ![](https://pic.desolatehao.top/80bbb7a2d4ee7e43021eaedbac94405a.png)
+
 ### 配置
 
 #### 控制台配置
+
 游览器访问 http://ip:15140/
 
 ![](https://pic.desolatehao.top/1547610eec22e3d76bc8f604dc042159.png)
@@ -165,7 +177,7 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 
 选择GsCore作为插件平台 官网 https://docs.sayu-bot.com/
 
-安装文档参考 https://docs.sayu-bot.com/Started/EnvCheck.html 
+安装文档参考 https://docs.sayu-bot.com/Started/EnvCheck.html
 
 ### 环境
 
@@ -174,6 +186,7 @@ ctrl + a + d 离开(离开不会关闭后台进程)。
 `git`环境
 
 `poetry`(版本须`>=1.4.0`)或者`pdm`或者`uv`（建议使用`uv`）
+
 ```
 apt install python3
 sudo ln -s /usr/bin/python3 /usr/bin/python
@@ -197,21 +210,27 @@ uv -V
 ### 安装
 
 下载
+
 ```
 git clone https://github.com/Genshin-bots/gsuid_core.git --depth=1 --single-branch
 ```
+
 进入文件夹
+
 ```
 cd gsuid_core
 ```
+
 注：如果下载失败 访问 https://ghproxy.link/ 寻找最新的git加速地址，本篇编写时可用为 https://ghfast.top ，即可把上述下载地址转化为
+
 ```
 git clone https://ghfast.top/https://github.com/Genshin-bots/gsuid_core.git --depth=1 --single-branch
 ```
 
 安装依赖(uv环境)
+
 ```
-uv sync 
+uv sync
 uv run python -m ensurepip
 ```
 
@@ -226,6 +245,7 @@ uv run python -m ensurepip
 ```
 uv run core
 ```
+
 然后转到koishi插件市场，搜索gscore-adapter，安装，进入配置界面
 
 机器人ID随便取，主机地址需要填写自身的IP(如果是服务器写服务器地址)，端口选择8765，ws路径为ws，http路径为genshinuid，保存启动
@@ -236,13 +256,12 @@ uv run core
 
 ![](https://pic.desolatehao.top/0c8e8808e51264a22aa5143e7146ea20.png)
 
-后续的相关配置参考 https://docs.sayu-bot.com/Started/CoreConfig.html 
+后续的相关配置参考 https://docs.sayu-bot.com/Started/CoreConfig.html
 
 进入GsCore控制台 参考 https://docs.sayu-bot.com/Advance/WebConsole.html
 
 ## 参考地址
 
-NapCat 安装 https://www.napcat.wiki/guide/install 
+NapCat 安装 https://www.napcat.wiki/guide/install
 
-Koishi 安装 https://forum.koishi.xyz/t/topic/810 
-
+Koishi 安装 https://forum.koishi.xyz/t/topic/810

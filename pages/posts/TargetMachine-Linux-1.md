@@ -2,33 +2,37 @@
 title: 知攻善防-Linux应急响应靶机-1
 lang: zh
 date: 2025-04-02
+type: note
 ---
+
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w
 
 前景需要：小王急匆匆地找到小张，小王说"李哥，我dev服务器被黑了",快救救我！！
 
 挑战内容：
 黑客的IP地址
-遗留下的三个flag  
+遗留下的三个flag
 
-注意：  
+注意：
 该靶机有很多非预期解，做靶机是给自己做，请大家合理按照预期解进行探索。
 
 相关账户密码：
-defend/defend  
+defend/defend
 root/defend
 
 打开命令行 使用history发现第一个flag 并且涉及了/etc/rc.d/rc.local文件
 flag{thisismybaby}
 ![](https://pic.desolatehao.top/8b056f49e0f29d96a4604be2a8b862dc.png)
+
 ```shell
 root@localhost dev]# history
     1  ls
     2  chmod +x /etc/rc.d/rc.local
     3  cat /etc/rc.d/rc.local
-    4  vim /etc/rc.d/rc.local 
+    4  vim /etc/rc.d/rc.local
     5  echo flag{thisismybaby}
 ```
+
 发现flag
 flag{kfcvme50}
 ![](https://pic.desolatehao.top/18da51970662ee592be11df8edfeff04.png)

@@ -2,7 +2,9 @@
 title: 知攻善防-Windows应急响应靶机-Web1
 lang: zh
 date: 2025-03-28
+type: note
 ---
+
 靶场地址 https://mp.weixin.qq.com/s/7PZGTD0GXaJLYZ62k9GB4w
 
 Windows应急响应靶机 - Web1
@@ -19,16 +21,19 @@ Windows应急响应靶机 - Web1
 用户：administrator 密码：`Zgsf@admin.com`
 
 ## 攻击者的shell密码
+
 D盾查杀web目录 C:\phpstudy_pro\WWW 发现后门
 C:\phpstudy_pro\WWW\content\plugins\tips\shell.php
 ![](https://pic.desolatehao.top/4ed7f366b06dcc9205b16df65d4dc348.png)
 
 验证rebeyond MD5值前16位，确认后门密码为 rebeyond
+
 ```
-e45e329feb5d925b a3f549b17b4b3dde 
+e45e329feb5d925b a3f549b17b4b3dde
 ```
 
 ## 攻击者的IP地址
+
 找到中间件为Apache
 ![](https://pic.desolatehao.top/9d1098a47bcdf0f13fdaa4ac0c7101c3.png)
 
@@ -36,11 +41,12 @@ e45e329feb5d925b a3f549b17b4b3dde
 ![](https://pic.desolatehao.top/193815877cab8bf43aad21bda9030fea.png)
 
 ## 攻击者的隐藏账户名称
+
 查找所有用户和管理员权限用户
 
 ```
 net user
-net localgroup Administrators  
+net localgroup Administrators
 ```
 
 发现隐藏账户 hack168$

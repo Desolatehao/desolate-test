@@ -2,6 +2,7 @@
 title: HTTP-and-HTTPS
 lang: zh
 date: 2025-04-11
+type: note
 ---
 
 HTTP 协议是一种**明文传输**协议

