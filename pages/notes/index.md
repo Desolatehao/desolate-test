@@ -1,7 +1,7 @@
 ---
 title: Notes - Anthony Fu
+display: ""
 art: plum
-display: ''
 ---
 
 <SubNav />
