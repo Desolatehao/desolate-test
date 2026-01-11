@@ -1,5 +1,5 @@
 ---
-title: HTTP & HTTPS
+title: HTTP-and-HTTPS
 lang: zh
 date: 2025-04-11
 ---

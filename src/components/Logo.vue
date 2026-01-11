@@ -1,6 +1,6 @@
 <template>
   <img
-    src="public/logo.jpg"
+    src="/logo.jpg"
     alt="Site Logo"
     class="logo"
   >
