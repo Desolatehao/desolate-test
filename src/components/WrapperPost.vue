@@ -134,7 +134,7 @@ const ArtComponent = computed(() => {
   </article>
 
   <div v-if="route.path !== '/'" class="prose m-auto mt-8 mb-8 slide-enter animate-delay-500 print:hidden">
-    <Comments />
+    <Comments v-if="route.path.startsWith('/posts/')" />
     <br>
     <span font-mono op50>> </span>
     <RouterLink
