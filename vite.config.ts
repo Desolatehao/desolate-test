@@ -90,6 +90,7 @@ export default defineConfig({
             light: 'vitesse-light',
           },
           langs: [
+            'applescript',
             'javascript',
             'typescript',
             'vue',
