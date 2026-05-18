@@ -545,7 +545,7 @@ echo "推荐: https://objective-see.org/products/knockknock.html"
 
 ### C. YARA 规则
 
-```yara
+```txt
 rule macOS_SilverFox_AppleScript_Loader {
     meta:
         description = "检测银狐木马 macOS AppleScript 变种"
@@ -570,7 +570,7 @@ rule macOS_SilverFox_AppleScript_Loader {
 
 ### D. Suricata/Snort 规则
 
-```
+```txt
 alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (
     msg:"SilverFox macOS - C2 Check-in (txid)";
     flow:established,to_server;
@@ -586,7 +586,7 @@ alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (
 
 ### E. EDR 行为检测（伪代码，可直接转为 SIEM/SOAR 规则）
 
-```
+```txt
 # 检测恶意 AppleScript 执行链
 event: PROCESS_CREATE
   parent: "osascript"
