@@ -1,9 +1,10 @@
 ---
-title: Media Consumption - Anthony Fu
-display: Media Consumption
-description: Anthony's Media Consumption
+title: Media Preview - Desolatehao
+display: Media Preview
+description: 媒体记录页面的布局预览。
+noindex: true
 ---
 
 <MediaConsumption />
 
-<div class="op50 mt-10">These are ones I enjoyed, not exhaustive. And not necessarily recommendations.</div>
+<div class="op50 mt-10">当前仅保留少量布局示例，后续会替换为个人观看与阅读记录。</div>

@@ -270,7 +270,7 @@ export default defineConfig({
           )
         }
 
-        if (page.is404) {
+        if (page.is404 || frontmatter.noindex === true) {
           meta.push({ name: 'robots', content: 'noindex, nofollow' })
         }
         else {

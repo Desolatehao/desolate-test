@@ -38,22 +38,19 @@ const { y: scroll } = useWindowScroll()
           <span class="lt-md:hidden">Notes</span>
           <div i-ri-article-line md:hidden />
         </RouterLink>
-        <RouterLink to="/media" title="Media">
+        <!-- <RouterLink to="/media" title="Media">
           <span class="lt-md:hidden">Media</span>
           <div i-ri-article-line md:hidden />
         </RouterLink>
         <RouterLink to="/photos" title="Photos">
           <div i-ri-camera-3-line />
-        </RouterLink>
+        </RouterLink> -->
         <!-- <RouterLink to="/demos" title="Demos">
           <div i-ri-screenshot-line />
         </RouterLink> -->
         <!-- <RouterLink to="/chat" title="Let's Chat">
           <div i-ri-chat-1-line />
         </RouterLink> -->
-        <!-- <a href="https://bsky.app/profile/antfu.me" target="_blank" title="Bluesky" class="lt-md:hidden">
-          <div i-ri-bluesky-line />
-        </a> -->
         <a href="https://github.com/Desolatehao" target="_blank" title="GitHub" class="lt-md:hidden">
           <div i-uil-github-alt />
         </a>
