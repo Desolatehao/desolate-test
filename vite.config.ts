@@ -1,5 +1,4 @@
-import { Buffer } from 'node:buffer'
-import { dirname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import MarkdownItShiki from '@shikijs/markdown-it'
 import { transformerNotationDiff, transformerNotationHighlight, transformerNotationWordHighlight } from '@shikijs/transformers'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
@@ -12,7 +11,6 @@ import LinkAttributes from 'markdown-it-link-attributes'
 import MarkdownItMagicLink from 'markdown-it-magic-link'
 // @ts-expect-error missing types
 import TOC from 'markdown-it-table-of-contents'
-import sharp from 'sharp'
 import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import IconsResolver from 'unplugin-icons/resolver'
@@ -36,6 +34,7 @@ import {
   SITE_NAME,
   warnSkippedPage,
 } from './scripts/content'
+import { generateOg, generateOgFromImage } from './scripts/og'
 import { slugify } from './scripts/slugify'
 
 const ogPromises = new Map<string, Promise<void>>()
@@ -230,15 +229,15 @@ export default defineConfig({
         }
 
         const ogPath = generatedOgPath(page)
-        if (ogPath && !page.frontmatter.image && !fs.existsSync(resolve('public', ogPath.slice(1)))) {
+        if (ogPath && !page.frontmatter.image) {
           const output = resolve('dist', ogPath.slice(1))
           if (!ogPromises.has(output)) {
             const sourceImage = `${id.slice(0, -3)}.png`
             ogPromises.set(
               output,
               fs.existsSync(sourceImage)
-                ? fs.copy(sourceImage, output)
-                : generateOg(frontmatter.title!.replace(/\s-\s.*$/, '').trim(), output),
+                ? generateOgFromImage(sourceImage, output)
+                : generateOg(frontmatter.title!.trim(), output),
             )
           }
         }
@@ -252,8 +251,17 @@ export default defineConfig({
           { property: 'og:type', content: page.isPost ? 'article' : 'website' },
           { property: 'og:locale', content: openGraphLocale(language) },
           { property: 'og:image:alt', content: frontmatter.title || SITE_NAME },
+          { property: 'og:image:type', content: 'image/png' },
           { name: 'twitter:image:alt', content: frontmatter.title || SITE_NAME },
+          { name: 'twitter:card', content: 'summary_large_image' },
         )
+
+        if (!page.frontmatter.image || page.frontmatter.image === '/og.png') {
+          meta.push(
+            { property: 'og:image:width', content: '1200' },
+            { property: 'og:image:height', content: '630' },
+          )
+        }
 
         if (page.isPost && page.date) {
           meta.push(
@@ -311,6 +319,7 @@ export default defineConfig({
       name: 'await',
       async closeBundle() {
         await Promise.all(ogPromises.values())
+        await generateOg('Desolate Hao', resolve('dist/og.png'))
         ogPromises.clear()
       },
     },
@@ -335,33 +344,3 @@ export default defineConfig({
     },
   },
 })
-
-const ogSVg = fs.readFileSync('./scripts/og-template.svg', 'utf-8')
-
-async function generateOg(title: string, output: string) {
-  if (fs.existsSync(output))
-    return
-
-  await fs.mkdir(dirname(output), { recursive: true })
-  // breakline every 30 chars
-  const lines = title.trim().split(/(.{0,30})(?:\s|$)/g).filter(Boolean)
-
-  const data: Record<string, string> = {
-    line1: lines[0],
-    line2: lines[1],
-    line3: lines[2],
-  }
-  const svg = ogSVg.replace(/\{\{([^}]+)\}\}/g, (_, name) => data[name] || '')
-
-  console.log(`Generating ${output}`)
-  try {
-    await sharp(Buffer.from(svg))
-      .resize(1200 * 1.1, 630 * 1.1)
-      .png()
-      .toFile(output)
-  }
-  catch (e) {
-    console.error('Failed to generate og image', e)
-    throw e
-  }
-}
