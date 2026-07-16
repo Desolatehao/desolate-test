@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://desolatehao.top/sitemap.xml

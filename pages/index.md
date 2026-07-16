@@ -1,7 +1,7 @@
 ---
 title: Desolate Hao
 description: Desolate Hao's Portfolio
-image: https://antfu.me/og.png
+image: /og.png
 art: random
 ---
 

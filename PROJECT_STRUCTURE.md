@@ -48,11 +48,12 @@
 存放不需要编译的静态资源文件，会被直接复制到构建输出目录。
 
 ### `/scripts` - 构建脚本
+- `content.ts` - 页面元数据、路由与发布规则的共享模块
 - `copy-fonts.ts` - 复制字体文件
-- `rss.ts` - 生成 RSS 订阅
+- `rss.ts` - 生成并验证 RSS、Atom 和 JSON Feed
+- `sitemap.ts` - 生成并验证站点地图
 - `photos-manage.ts` - 照片管理脚本
 - `img-compress-staged.ts` - 图片压缩脚本
-- `redirects.ts` - 重定向配置生成
 
 ### `/photos` - 照片数据
 存放照片文件及其元数据（JSON 格式）。
@@ -71,7 +72,7 @@
 - `tsconfig.json` - TypeScript 配置
 - `eslint.config.js` - ESLint 代码检查配置
 - `package.json` - 项目依赖和脚本配置
-- `netlify.toml` - Netlify 部署配置
+- `_redirects` - Cloudflare Pages 重定向配置
 
 ## 技术栈
 
@@ -90,3 +91,5 @@
 - `pnpm dev` - 启动开发服务器
 - `pnpm build` - 构建生产版本
 - `pnpm preview` - 预览构建结果
+
+生产站点通过 GitHub 联动部署到 Cloudflare Pages。构建时会使用统一的内容发布规则排除草稿、未来文章和空正文，并在 `dist/` 生成订阅源、`sitemap.xml` 与顶层 `404.html`。

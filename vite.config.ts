@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer'
-import { basename, dirname, resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import MarkdownItShiki from '@shikijs/markdown-it'
 import { transformerNotationDiff, transformerNotationHighlight, transformerNotationWordHighlight } from '@shikijs/transformers'
 import { rendererRich, transformerTwoslash } from '@shikijs/twoslash'
@@ -25,9 +25,20 @@ import { defineConfig } from 'vite'
 import Inspect from 'vite-plugin-inspect'
 import Exclude from 'vite-plugin-optimize-exclude'
 import SVG from 'vite-svg-loader'
+import {
+  generatedOgPath,
+  normalizeLanguage,
+  openGraphLocale,
+  pageImageUrl,
+  pageUrl,
+  publicationReason,
+  readContentFile,
+  SITE_NAME,
+  warnSkippedPage,
+} from './scripts/content'
 import { slugify } from './scripts/slugify'
 
-const promises: Promise<any>[] = []
+const ogPromises = new Map<string, Promise<void>>()
 
 export default defineConfig({
   resolve: {
@@ -61,6 +72,19 @@ export default defineConfig({
           route.addToMeta({
             frontmatter: data,
           })
+        }
+      },
+      beforeWriteFiles(rootRoute) {
+        for (const route of [...rootRoute]) {
+          const filePath = route.component
+          if (!filePath || !filePath.includes('/pages/posts/') || filePath.endsWith('/index.md'))
+            continue
+
+          const page = readContentFile(filePath)
+          const reason = publicationReason(page)
+          warnSkippedPage(page, reason)
+          if (reason !== 'published')
+            route.delete()
         }
       },
     }),
@@ -189,21 +213,63 @@ export default defineConfig({
         md.use(GitHubAlerts)
       },
       frontmatterPreprocess(frontmatter, options, id, defaults) {
-        (() => {
-          if (!id.endsWith('.md'))
-            return
-          const route = basename(id, '.md')
-          if (route === 'index' || frontmatter.image || !frontmatter.title)
-            return
-          const path = `og/${route}.png`
-          promises.push(
-            fs.existsSync(`${id.slice(0, -3)}.png`)
-              ? fs.copy(`${id.slice(0, -3)}.png`, `public/${path}`)
-              : generateOg(frontmatter.title!.replace(/\s-\s.*$/, '').trim(), `public/${path}`),
+        if (!id.endsWith('.md'))
+          return { head: defaults(frontmatter, options), frontmatter }
+
+        const page = readContentFile(id)
+        const language = normalizeLanguage(frontmatter.lang)
+        const image = pageImageUrl({ ...page, frontmatter })
+
+        frontmatter.description = typeof frontmatter.description === 'string' && frontmatter.description.trim()
+          ? frontmatter.description.trim()
+          : page.description
+        frontmatter.image = image
+        frontmatter.htmlAttrs = {
+          ...(frontmatter.htmlAttrs as Record<string, string> || {}),
+          lang: language,
+        }
+
+        const ogPath = generatedOgPath(page)
+        if (ogPath && !page.frontmatter.image && !fs.existsSync(resolve('public', ogPath.slice(1)))) {
+          const output = resolve('dist', ogPath.slice(1))
+          if (!ogPromises.has(output)) {
+            const sourceImage = `${id.slice(0, -3)}.png`
+            ogPromises.set(
+              output,
+              fs.existsSync(sourceImage)
+                ? fs.copy(sourceImage, output)
+                : generateOg(frontmatter.title!.replace(/\s-\s.*$/, '').trim(), output),
+            )
+          }
+        }
+
+        const head = defaults(frontmatter, options) || {}
+        const meta = (head.meta ||= []) as Record<string, any>[]
+        const link = (head.link ||= []) as Record<string, any>[]
+
+        meta.push(
+          { property: 'og:site_name', content: SITE_NAME },
+          { property: 'og:type', content: page.isPost ? 'article' : 'website' },
+          { property: 'og:locale', content: openGraphLocale(language) },
+          { property: 'og:image:alt', content: frontmatter.title || SITE_NAME },
+          { name: 'twitter:image:alt', content: frontmatter.title || SITE_NAME },
+        )
+
+        if (page.isPost && page.date) {
+          meta.push(
+            { property: 'article:published_time', content: page.date.toISOString() },
+            { property: 'article:author', content: SITE_NAME },
           )
-          frontmatter.image = `https://antfu.me/${path}`
-        })()
-        const head = defaults(frontmatter, options)
+        }
+
+        if (page.is404) {
+          meta.push({ name: 'robots', content: 'noindex, nofollow' })
+        }
+        else {
+          meta.push({ property: 'og:url', content: pageUrl(page.route) })
+          link.push({ rel: 'canonical', href: pageUrl(page.route) })
+        }
+
         return { head, frontmatter }
       },
     }),
@@ -244,7 +310,8 @@ export default defineConfig({
     {
       name: 'await',
       async closeBundle() {
-        await Promise.all(promises)
+        await Promise.all(ogPromises.values())
+        ogPromises.clear()
       },
     },
   ],
@@ -260,6 +327,12 @@ export default defineConfig({
 
   ssgOptions: {
     formatting: 'minify',
+    includedRoutes(paths) {
+      return [
+        ...paths.filter(path => !path.includes(':') && !path.includes('*')),
+        '/404',
+      ]
+    },
   },
 })
 
@@ -289,5 +362,6 @@ async function generateOg(title: string, output: string) {
   }
   catch (e) {
     console.error('Failed to generate og image', e)
+    throw e
   }
 }

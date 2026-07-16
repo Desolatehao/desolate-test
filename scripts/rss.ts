@@ -1,91 +1,107 @@
 import type { FeedOptions, Item } from 'feed'
-import { dirname } from 'node:path'
-import fg from 'fast-glob'
+import type { RenderRule } from 'markdown-it/lib/renderer.mjs'
 import { Feed } from 'feed'
 import fs from 'fs-extra'
-import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
+import {
+  AUTHOR,
+  getPublishedPosts,
+  pageImageUrl,
+  pageUrl,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from './content'
 
-console.log('RSS SCRIPT RUNNING')
-
-const DOMAIN = 'https://desolatehao.top'
-const AUTHOR = {
-  name: 'Desolatehao',
-  email: 'hi@desolatehao.top',
-  link: DOMAIN,
+interface RenderEnvironment {
+  pageUrl: string
 }
-const markdown = MarkdownIt({
+
+const markdown = new MarkdownIt({
   html: true,
   breaks: true,
   linkify: true,
 })
 
-async function run() {
-  await buildBlogRSS()
+const defaultImageRenderer = markdown.renderer.rules.image
+const defaultLinkRenderer = markdown.renderer.rules.link_open
+
+markdown.renderer.rules.image = absoluteAttributeRenderer('src', defaultImageRenderer)
+markdown.renderer.rules.link_open = absoluteAttributeRenderer('href', defaultLinkRenderer)
+
+const posts = getPublishedPosts()
+const options: FeedOptions = {
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  id: `${SITE_URL}/`,
+  link: `${SITE_URL}/`,
+  language: 'zh-CN',
+  copyright: `© ${SITE_NAME}`,
+  author: AUTHOR,
+  image: `${SITE_URL}/avatar.png`,
+  favicon: `${SITE_URL}/favicon-32x32.png`,
+  feedLinks: {
+    json: `${SITE_URL}/feed.json`,
+    atom: `${SITE_URL}/feed.atom`,
+    rss: `${SITE_URL}/feed.xml`,
+  },
 }
 
-async function buildBlogRSS() {
-  const files = await fg('pages/posts/*.md')
-  console.log(`Found ${files.length} posts.`) // 建议添加此行，方便在编译时确认是否读取成功
-
-  const options = {
-    title: 'Desolatehao',
-    description: 'Desolatehao Blog',
-    id: 'https://desolatehao.top/',
-    link: 'https://desolatehao.top/',
-    copyright: '© Desolatehao',
-    feedLinks: {
-      json: 'https://desolatehao.top/feed.json',
-      atom: 'https://desolatehao.top/feed.atom',
-      rss: 'https://desolatehao.top/feed.xml',
-    },
+const items: Item[] = posts.map((post) => {
+  const link = pageUrl(post.route)
+  return {
+    title: post.frontmatter.title.trim(),
+    id: link,
+    link,
+    date: post.date!,
+    description: post.description,
+    content: markdown.render(post.cleanContent, { pageUrl: link } satisfies RenderEnvironment),
+    author: [AUTHOR],
+    image: pageImageUrl(post),
   }
-  const posts: any[] = (
-    await Promise.all(
-      files.filter(i => !i.includes('index'))
-        .map(async (i) => {
-          const raw = await fs.readFile(i, 'utf-8')
-          const { data, content } = matter(raw)
+})
 
-          // if (data.lang !== 'en')
-          //  return
+const feed = new Feed(options)
+items.forEach(item => feed.addItem(item))
 
-          const html = markdown.render(content)
-            .replace('src="/', `src="${DOMAIN}/`)
-
-          if (data.image?.startsWith('/'))
-            data.image = DOMAIN + data.image
-
-          return {
-            ...data,
-            date: new Date(data.date),
-            content: html,
-            author: [AUTHOR],
-            link: DOMAIN + i.replace(/^pages/, '').replace(/\.md$/, ''),
-          }
-        }),
-    ))
-    .filter(Boolean)
-
-  posts.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0))
-
-  await writeFeed('feed', options, posts)
+const outputs = {
+  'dist/feed.xml': feed.rss2(),
+  'dist/feed.atom': feed.atom1(),
+  'dist/feed.json': feed.json1(),
 }
 
-async function writeFeed(name: string, options: FeedOptions, items: Item[]) {
-  options.author = AUTHOR
-  options.image = 'https://desolatehao.top/avatar.png'
-  options.favicon = 'https://desolatehao.top/favicon-32x32.png'
+validateFeeds(outputs, items.length)
+await Promise.all(Object.entries(outputs).map(([file, content]) => fs.outputFile(file, content, 'utf-8')))
+console.log(`[feed] Generated RSS, Atom, and JSON feeds with ${items.length} posts.`)
 
-  const feed = new Feed(options)
-
-  items.forEach(item => feed.addItem(item))
-  // items.forEach(i=> console.log(i.title, i.date))
-
-  await fs.ensureDir(dirname(`./dist/${name}`))
-  await fs.writeFile(`./dist/${name}.xml`, feed.rss2(), 'utf-8')
-  await fs.writeFile(`./dist/${name}.atom`, feed.atom1(), 'utf-8')
-  await fs.writeFile(`./dist/${name}.json`, feed.json1(), 'utf-8')
+function absoluteAttributeRenderer(attribute: 'src' | 'href', fallback?: RenderRule): RenderRule {
+  return (tokens, index, options, env: RenderEnvironment, self) => {
+    const value = tokens[index].attrGet(attribute)
+    if (value)
+      tokens[index].attrSet(attribute, absoluteContentUrl(value, env.pageUrl))
+    return fallback ? fallback(tokens, index, options, env, self) : self.renderToken(tokens, index, options)
+  }
 }
 
-run()
+function absoluteContentUrl(value: string, base: string): string {
+  if (/^(?:data:|mailto:|tel:|javascript:)/i.test(value))
+    return value
+  return new URL(value, base).href
+}
+
+function validateFeeds(outputs: Record<string, string>, expectedItems: number) {
+  const rss = outputs['dist/feed.xml']
+  const atom = outputs['dist/feed.atom']
+  const json = JSON.parse(outputs['dist/feed.json'])
+
+  if (!/^<\?xml[\s\S]*<rss\b/.test(rss) || !rss.includes('</rss>'))
+    throw new Error('[feed] RSS output has an invalid root structure.')
+  if (!/^<\?xml[\s\S]*<feed\b/.test(atom) || !atom.includes('</feed>'))
+    throw new Error('[feed] Atom output has an invalid root structure.')
+  if ((rss.match(/<item>/g) || []).length !== expectedItems)
+    throw new Error('[feed] RSS item count does not match the published post count.')
+  if ((atom.match(/<entry>/g) || []).length !== expectedItems)
+    throw new Error('[feed] Atom entry count does not match the published post count.')
+  if (!Array.isArray(json.items) || json.items.length !== expectedItems)
+    throw new Error('[feed] JSON Feed item count does not match the published post count.')
+}

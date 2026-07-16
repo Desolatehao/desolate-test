@@ -28,8 +28,6 @@ catalogs:
   dev:
     '@antfu/eslint-config': ^6.0.0
     '@iconify/json': ^2.2.398
-    '@octokit/core': ^7.0.5
-    '@octokit/rest': ^22.0.0
     ansis: ^4.2.0
     blurhash: ^2.0.5
     cross-env: ^10.1.0
