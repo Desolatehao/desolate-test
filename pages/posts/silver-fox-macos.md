@@ -13,7 +13,7 @@ type: note
 
 ## 一、事件触发：TDP 告警
 
-某天下午，TDP（微步的 SIEM）弹了几条告警，命中银狐木马的恶意 IOC 情报库。具体命中的是出站流量中的恶意域名请求。
+某天下午，TDP（微步的 NDR）弹了几条告警，命中银狐木马的恶意 IOC 情报库。具体命中的是出站流量中的恶意域名请求。
 
 **TDP 告警详情**：
 
@@ -563,7 +563,7 @@ alert tcp $HOME_NET any -> $EXTERNAL_NET $HTTP_PORTS (
 )
 ```
 
-### E. EDR 行为检测（伪代码，可直接转为 SIEM/SOAR 规则）
+### E. EDR 行为检测（伪代码，可直接转为 NDR/SOAR 规则）
 
 ```txt
 # 检测恶意 AppleScript 执行链
